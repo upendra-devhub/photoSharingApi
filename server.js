@@ -2,9 +2,15 @@ const express=require('express');
 const app=express();
 
 const postRoutes=require('./src/routes/postRoutes');
-app.use(express.json());
-app.use('/api/posts',postRoutes)
+const logger=require('./src/middlewares/logger')
+const errorHandler=require('./src/middlewares/errorHandler')
 
+
+app.use(express.json());
+app.use(logger);
+
+app.use('/api/posts',postRoutes)
+app.use(errorHandler)
 
 // app.get("/",(req,res)=>{
 //     res.send("Welcome to Photo Sharing API")
