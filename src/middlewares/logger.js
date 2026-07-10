@@ -4,7 +4,7 @@ const logger=(req,res,next)=>{
     const method=req.method;
     const url=req.url;
 
-    console.log(`${time} Reciuieved a ${method} request to ${url}`)
+    console.log(`${time} Recieved a ${method} request to ${url}`)
     next();
 }
 module.exports=logger
