@@ -4,6 +4,7 @@ const app=express();
 
 const connectDB = require('./src/config/db');
 const postRoutes=require('./src/routes/postRoutes');
+const userRoutes=require('./src/routes/userRoutes');
 const logger=require('./src/middlewares/logger')
 const errorHandler=require('./src/middlewares/errorHandler')
 
@@ -11,6 +12,7 @@ const errorHandler=require('./src/middlewares/errorHandler')
 app.use(express.json());
 app.use(logger);
 
+app.use('/api/users',userRoutes);
 app.use('/api/posts',postRoutes)
 app.use(errorHandler)
 
