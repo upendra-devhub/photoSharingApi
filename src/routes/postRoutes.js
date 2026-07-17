@@ -1,5 +1,6 @@
 const express=require('express');
 const router=express.Router();
+const {auth}=require('../middlewares/authMiddleware')
 
 const {
     getPosts,
@@ -16,8 +17,8 @@ router.route('/')
 
 router.route('/:id')
     .get(getPostById)
-    .put(updatePost)
-    .patch(updatePost)
-    .delete(deletePost)
+    .put(auth,updatePost)
+    .patch(auth,updatePost)
+    .delete(auth,deletePost)
 
 module.exports=router;

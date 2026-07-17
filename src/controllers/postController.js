@@ -12,7 +12,7 @@ const getPosts=async (req,res,next)=>{
 
 const getPostById=async (req,res,next)=>{
     try{
-        const post=Post.findById(rrq.params.id);
+        const post=await Post.findById(req.params.id);
         if(!post){
             res.status(404);
             throw new Error("No such post  available in DB")
@@ -40,7 +40,7 @@ const updatePost=async (req,res,next)=>{
     try{
         const updatedPost=await Post.findByIdAndUpdate(req.params.id,req.body,{new:true})
 
-        res.json(updatePost)
+        res.json(updatedPost)
     }catch(err){
         next(err);
     }
