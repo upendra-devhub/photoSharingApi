@@ -27,25 +27,47 @@ const getPostById=async (req,res,next)=>{
 
 const createPost=async (req,res,next)=>{
     try{
-        const newPost=await Post.create({
-            caption:req.body.caption
-        })
-        res.status(201).json(newPost)
+        if(!req.file){
+            res.status(400);
+            throw new Error('Please upload an image')
+        }
+        console.log("UPLOADED FILE:", req.file);
+        const url=req.file.path || req.file.url;
+
+        const post = await Post.create({
+            caption:req.body.caption,
+            imageURL:url
+        });
+        res.status(201).json(post);
     }catch(err){
         next(err);
     }
 }
 
+//Update aPost
 const updatePost=async (req,res,next)=>{
-    try{
-        const updatedPost=await Post.findByIdAndUpdate(req.params.id,req.body,{new:true})
-
-        res.json(updatedPost)
-    }catch(err){
-        next(err);
-    }
+try{
+let post=await Post.findById(req.params.id);
+if(!post){
+res.status(404);
+throw new Error("Post not found");
 }
 
+const updateData={caption:req.body.caption}
+if (req.file) {
+    updateData.imageURL = req.file.path || req.file.url;
+}
+
+const updatedPost=await Post.findByIdAndUpdate(req.params.id,updateData,{
+new:true
+});
+
+res.json(updatedPost);
+
+}catch(err){
+next(err);
+}
+}
 // Delete a post
 
 const deletePost=async (req,res,next)=>{

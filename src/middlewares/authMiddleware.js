@@ -15,13 +15,13 @@ const auth=async(req,res,next)=>{
             next();
         } catch (error) {
             res.status(401);
-            next(new Error("Not authorized, token failed"));
+            return next(new Error("Not authorized, token failed"));
         }
     }
 
     if(!token){
         res.status(401);
-        next(new Error("No token sent"));
+        return next(new Error("No token sent"));
     }
 }
 

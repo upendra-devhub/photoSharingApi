@@ -1,6 +1,7 @@
 const express=require('express');
 const router=express.Router();
 const {auth}=require('../middlewares/authMiddleware')
+const upload=require('../config/uploadConfig')
 
 const {
     getPosts,
@@ -13,12 +14,12 @@ const {
 // posts whic dont have ID param
 router.route('/')
     .get(getPosts)
-    .post(createPost)
+    .post(auth,upload.single('image'),createPost)
 
 router.route('/:id')
     .get(getPostById)
-    .put(auth,updatePost)
-    .patch(auth,updatePost)
+    .put(auth,upload.single('image'),updatePost)
+    .patch(auth,upload.single('image'),updatePost)
     .delete(auth,deletePost)
 
 module.exports=router;
