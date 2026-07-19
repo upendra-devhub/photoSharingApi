@@ -1,4 +1,5 @@
 const Post=require('../models/post')
+const cloudinary=require('cloudinary').v2;
 
 
 const getPosts=async (req,res,next)=>{
@@ -56,6 +57,10 @@ throw new Error("Post not found");
 const updateData={caption:req.body.caption}
 if (req.file) {
     updateData.imageURL = req.file.path || req.file.url;
+    if(post.imageURL){
+        const publicId=post.imageURL.split('/').slice(-2).join('/').split('.')[0];
+        await cloudinary.uploader.destroy(publicId);
+    }
 }
 
 const updatedPost=await Post.findByIdAndUpdate(req.params.id,updateData,{
@@ -71,14 +76,23 @@ next(err);
 // Delete a post
 
 const deletePost=async (req,res,next)=>{
-    try{
-       const deletedPost=await Post.findByIdAndDelete(req.params.id);
-       res.json({message:"Post deleted succesfully"})
-    }catch(err){
-        next(err);
-    }
+try{
+const post=await Post.findById(req.params.id);
+if(!post){
+res.status(404);
+throw new Error("Post not found");
+}
+if(post.imageURL){
+const publicId=post.imageURL.split('/').slice(-2).join("/").split(".")[0];
+await cloudinary.uploader.destroy(publicId);
 }
 
+await post.deleteOne();
+res.json({message:"Post and image deleted successfully"})
+}catch(err){
+next(err);
+}
+}
 
 module.exports = {
     getPosts,
